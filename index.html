@@ -9,11 +9,11 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: radial-gradient(circle at center, #1a001a 0%, #09000d 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -23,83 +23,137 @@
             color: #fff;
         }
 
+        /* Arka plan parıltıları */
+        .ambient-light {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 75, 110, 0.15);
+            filter: blur(100px);
+            border-radius: 50%;
+            z-index: 1;
+            animation: pulseGlow 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.4; }
+            100% { transform: scale(1.3); opacity: 0.8; }
+        }
+
         .container {
-            text-align: center;
+            position: relative;
             z-index: 10;
-            padding: 20px;
-            max-width: 600px;
+            text-align: center;
+            padding: 30px;
+            max-width: 650px;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         h1 {
-            font-size: 2.2rem;
-            margin-bottom: 30px;
-            letter-spacing: 1px;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            font-size: 2.5rem;
+            margin-bottom: 35px;
+            letter-spacing: 1.5px;
+            background: linear-gradient(45deg, #ff758c, #ff7eb3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 25px rgba(255, 117, 140, 0.3);
+            animation: fadeInDown 1s ease;
         }
 
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Lüks Buton Tasarımı */
         .surprise-btn {
             background: linear-gradient(135deg, #ff416c, #ff4b2b);
             color: white;
             border: none;
-            padding: 16px 36px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            padding: 18px 45px;
+            font-size: 1.3rem;
+            font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 10px 25px rgba(255, 65, 108, 0.4);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 65, 108, 0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             outline: none;
+            letter-spacing: 1px;
             position: relative;
             overflow: hidden;
         }
 
+        .surprise-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: rgba(255, 255, 255, 0.15);
+            transform: rotate(45deg) translateY(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .surprise-btn:hover::after {
+            transform: rotate(45deg) translateY(100%);
+        }
+
         .surprise-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(255, 65, 108, 0.6);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(255, 65, 108, 0.7);
         }
 
         .surprise-btn:active {
             transform: translateY(1px);
         }
 
-        /* Çiçek Alanı */
-        .bouquet-container {
+        /* Çiçek Alanı (Glassmorphism Kutu) */
+        .bouquet-wrapper {
             position: relative;
-            width: 100%;
-            height: 450px;
-            margin-top: 20px;
+            width: 420px;
+            height: 480px;
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             display: flex;
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transform: scale(0.8);
-            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0.5) translateY(30px);
+            transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
         }
 
-        .bouquet-container.show {
+        .bouquet-wrapper.show {
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
         }
 
         canvas {
             position: absolute;
             top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            pointer-events: none;
+            left: 0;
         }
 
         /* İmza Alanı */
         .signature {
-            margin-top: 15px;
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #ff9a9e;
-            text-shadow: 0 2px 10px rgba(255, 154, 158, 0.4);
+            margin-top: 25px;
+            font-size: 1.5rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 15px rgba(255, 154, 158, 0.4);
             opacity: 0;
             transform: translateY(20px);
-            transition: all 0.8s ease 0.5s;
+            transition: all 1s ease 0.6s;
         }
 
         .signature.show {
@@ -107,53 +161,45 @@
             transform: translateY(0);
         }
 
-        /* Arka Plan Parçacıkları */
+        /* Uçuşan Parçacıklar */
         .particle {
             position: absolute;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 182, 193, 0.6);
             border-radius: 50%;
             pointer-events: none;
-            animation: floatUp 8s linear infinite;
+            animation: floatUp 7s linear infinite;
         }
 
         @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) scale(0);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(-10vh) scale(1);
-                opacity: 0;
-            }
+            0% { transform: translateY(105vh) scale(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Arka plan hareketli ışıklar -->
+    <div class="ambient-light"></div>
     <div id="particles"></div>
 
     <div class="container">
-        <h1 id="titleText">Özel Bir Sürpriz İçin Hazır Mısın?</h1>
+        <h1 id="titleText">Sana Özel Hazırlanan Sürpriz</h1>
         <button class="surprise-btn" id="surpriseBtn" onclick="revealSurprise()">Sürprizi Gör</button>
         
-        <div class="bouquet-container" id="bouquetBox">
-            <canvas id="flowerCanvas" width="400" height="450"></canvas>
+        <div class="bouquet-wrapper" id="bouquetBox">
+            <canvas id="flowerCanvas" width="420" height="480"></canvas>
         </div>
         
         <div class="signature" id="signatureText">Sana Gönderen: Bay Hiçkimse</div>
     </div>
 
     <script>
-        // Arka plan için rastgele parlayan parçacıklar üretme
+        // Arka plan hareketli yumuşak ışık parçacıkları
         const particlesContainer = document.getElementById('particles');
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 35; i++) {
             const p = document.createElement('div');
             p.classList.add('particle');
-            const size = Math.random() * 4 + 2;
+            const size = Math.random() * 5 + 2;
             p.style.width = `${size}px`;
             p.style.height = `${size}px`;
             p.style.left = `${Math.random() * 100}vw`;
@@ -168,7 +214,7 @@
             const bouquetBox = document.getElementById('bouquetBox');
             const signatureText = document.getElementById('signatureText');
 
-            // Butonu ve başlığı yumuşakça gizle
+            // Akıcı geçiş için elementleri gizle
             btn.style.opacity = '0';
             btn.style.transform = 'scale(0.8)';
             title.style.opacity = '0';
@@ -177,122 +223,134 @@
                 btn.style.display = 'none';
                 title.style.display = 'none';
                 
-                // Buket alanını ve imzayı göster
+                // Buket kutusunu ve imzayı aç
                 bouquetBox.classList.add('show');
                 signatureText.classList.add('show');
                 
-                // Çiçek çizim animasyonunu başlat
-                startDrawingFlowers();
-            }, 400);
+                // Yüksek Kaliteli Çiçek Çizim Animasyonunu Başlat
+                startAdvancedBouquetAnimation();
+            }, 500);
         }
 
-        // Canvas Üzerinde Gelişmiş Gerçekçi Çiçek Demeti Çizimi
-        function startDrawingFlowers() {
+        // Profesyonel Canvas Çiçek Demeti Motoru
+        function startAdvancedBouquetAnimation() {
             const canvas = document.getElementById('flowerCanvas');
             const ctx = canvas.getContext('2d');
             
             let progress = 0;
 
-            function drawBouquet(p) {
+            function drawDetailedBouquet(p) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // --- 1. Saplar (Gövde) ---
+                const rootX = 210;
+                const rootY = 430;
+
+                // --- 1. Buket Ambalajı / Kâğıdı ---
+                if (p > 0.2) {
+                    let wrapProg = Math.min((p - 0.2) / 0.3, 1);
+                    ctx.save();
+                    ctx.globalAlpha = wrapProg * 0.85;
+                    
+                    // Ambalaj Sol Kanat
+                    ctx.fillStyle = '#2c223b';
+                    ctx.beginPath();
+                    ctx.moveTo(rootX, rootY - 40);
+                    ctx.lineTo(rootX - 90, rootY - 140);
+                    ctx.lineTo(rootX - 50, rootY);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Ambalaj Sağ Kanat
+                    ctx.beginPath();
+                    ctx.moveTo(rootX, rootY - 40);
+                    ctx.lineTo(rootX + 90, rootY - 140);
+                    ctx.lineTo(rootX + 50, rootY);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Kurdele
+                    ctx.fillStyle = '#ff4b5c';
+                    ctx.beginPath();
+                    ctx.ellipse(rootX, rootY - 50, 22, 12, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                // --- 2. Zarif Kıvrımlı Saplar ---
                 ctx.lineWidth = 4;
                 ctx.lineCap = 'round';
 
-                // Ana Demet Bağlama Noktası (Vazo/Buket Kökü): (200, 380)
-                const rootX = 200;
-                const rootY = 380;
+                const stems = [
+                    { ctrlX: 170, ctrlY: 340, endX: 130, endY: 210 },
+                    { ctrlX: 190, ctrlY: 330, endX: 170, endY: 175 },
+                    { ctrlX: 210, ctrlY: 320, endX: 210, endY: 150 },
+                    { ctrlX: 230, ctrlY: 330, endX: 250, endY: 175 },
+                    { ctrlX: 250, ctrlY: 340, endX: 290, endY: 210 }
+                ];
 
-                // Sap 1 (Sol)
-                ctx.strokeStyle = '#2d5a27';
-                ctx.beginPath();
-                ctx.moveTo(rootX, rootY);
-                ctx.quadraticCurveTo(160, 300, 110, 200 * p);
-                ctx.stroke();
+                stems.forEach(stem => {
+                    ctx.strokeStyle = '#2d5a27';
+                    ctx.beginPath();
+                    ctx.moveTo(rootX, rootY - 50);
+                    ctx.quadraticCurveTo(stem.ctrlX, stem.ctrlY, rootX + (stem.endX - rootX) * p, rootY - 50 - (rootY - 50 - stem.endY) * p);
+                    ctx.stroke();
+                });
 
-                // Sap 2 (Orta Sol)
-                ctx.beginPath();
-                ctx.moveTo(rootX, rootY);
-                ctx.quadraticCurveTo(180, 290, 150, 170 * p);
-                ctx.stroke();
-
-                // Sap 3 (Merkez)
-                ctx.beginPath();
-                ctx.moveTo(rootX, rootY);
-                ctx.lineTo(200, 140 * p);
-                ctx.stroke();
-
-                // Sap 4 (Orta Sağ)
-                ctx.beginPath();
-                ctx.moveTo(rootX, rootY);
-                ctx.quadraticCurveTo(220, 290, 250, 170 * p);
-                ctx.stroke();
-
-                // Sap 5 (Sağ)
-                ctx.beginPath();
-                ctx.moveTo(rootX, rootY);
-                ctx.quadraticCurveTo(240, 300, 290, 200 * p);
-                ctx.stroke();
-
-
-                // --- 2. Yapraklar ---
-                if (p > 0.4) {
-                    let leafProgress = (p - 0.4) / 0.6;
+                // --- 3. Yapraklar ---
+                if (p > 0.45) {
+                    let leafProgress = (p - 0.45) / 0.55;
                     ctx.fillStyle = '#3a7d34';
                     
                     // Sol Yaprak
                     ctx.save();
-                    ctx.translate(150, 280);
-                    ctx.rotate(-Math.PI / 4);
+                    ctx.translate(160, 310);
+                    ctx.rotate(-Math.PI / 3);
                     ctx.scale(leafProgress, leafProgress);
                     ctx.beginPath();
-                    ctx.ellipse(0, 0, 30, 12, 0, 0, Math.PI * 2);
+                    ctx.ellipse(0, 0, 35, 14, 0, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.restore();
 
                     // Sağ Yaprak
                     ctx.save();
-                    ctx.translate(250, 280);
-                    ctx.rotate(Math.PI / 4);
+                    ctx.translate(260, 310);
+                    ctx.rotate(Math.PI / 3);
                     ctx.scale(leafProgress, leafProgress);
                     ctx.beginPath();
-                    ctx.ellipse(0, 0, 30, 12, 0, 0, Math.PI * 2);
+                    ctx.ellipse(0, 0, 35, 14, 0, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.restore();
                 }
 
-
-                // --- 3. Çiçek Başlıkları (Güller ve Papatyalar) ---
+                // --- 4. Gerçekçi Gül ve Çiçek Katmanları ---
                 if (p > 0.6) {
                     let flowerProgress = (p - 0.6) / 0.4;
 
-                    // Çiçek Çizim Yardımcı Fonksiyonu
-                    function drawRose(x, y, scale, colorCore, colorOuter) {
+                    function drawRealisticRose(x, y, scale, coreColor, outerColor) {
                         ctx.save();
                         ctx.translate(x, y);
                         ctx.scale(scale * flowerProgress, scale * flowerProgress);
 
                         // Dış Taç Yapraklar
-                        ctx.fillStyle = colorOuter;
-                        for (let i = 0; i < 8; i++) {
-                            ctx.rotate((Math.PI * 2) / 8);
+                        ctx.fillStyle = outerColor;
+                        for (let i = 0; i < 9; i++) {
+                            ctx.rotate((Math.PI * 2) / 9);
                             ctx.beginPath();
-                            ctx.ellipse(0, 14, 12, 22, 0, 0, Math.PI * 2);
+                            ctx.ellipse(0, 16, 13, 24, 0, 0, Math.PI * 2);
                             ctx.fill();
                         }
 
                         // İç Taç Yapraklar
-                        ctx.fillStyle = colorCore;
-                        for (let i = 0; i < 6; i++) {
-                            ctx.rotate((Math.PI * 2) / 6);
+                        ctx.fillStyle = coreColor;
+                        for (let i = 0; i < 7; i++) {
+                            ctx.rotate((Math.PI * 2) / 7);
                             ctx.beginPath();
-                            ctx.ellipse(0, 7, 8, 15, 0, 0, Math.PI * 2);
+                            ctx.ellipse(0, 8, 9, 16, 0, 0, Math.PI * 2);
                             ctx.fill();
                         }
 
                         // Merkez Göbek
-                        ctx.fillStyle = '#b3003b';
+                        ctx.fillStyle = '#800020';
                         ctx.beginPath();
                         ctx.arc(0, 0, 6, 0, Math.PI * 2);
                         ctx.fill();
@@ -300,29 +358,20 @@
                         ctx.restore();
                     }
 
-                    // Sol Çiçek (Pembe Gül)
-                    drawRose(110, 200, 1, '#ff6b8b', '#ff477e');
-
-                    // Sağ Çiçek (Kırmızı Gül)
-                    drawRose(290, 200, 1, '#ff334b', '#cc0020');
-
-                    // Orta Sol Çiçek (Mor/Magenta Gül)
-                    drawRose(150, 170, 0.9, '#da70d6', '#ba55d3');
-
-                    // Orta Sağ Çiçek (Somon Gül)
-                    drawRose(250, 170, 0.9, '#ffa07a', '#ff7f50');
-
-                    // Ana Merkez Büyük Gül (Kırmızı-Bordo)
-                    drawRose(200, 140, 1.2, '#e60026', '#b3001e');
+                    // Buketteki Çiçeklerin Konum ve Renkleri
+                    drawRealisticRose(130, 210, 0.95, '#ff758c', '#ff477e'); // Sol Gül
+                    drawRealisticRose(290, 210, 0.95, '#ff5252', '#d32f2f'); // Sağ Gül
+                    drawRealisticRose(170, 175, 1.0,  '#e040fb', '#aa00ff'); // Orta Sol Mor Gül
+                    drawRealisticRose(250, 175, 1.0,  '#ff9e80', '#ff6e40'); // Orta Sağ Somon Gül
+                    drawRealisticRose(210, 150, 1.25, '#ff1744', '#b71c1c'); // Merkez Büyük Gül
                 }
             }
 
-            // Animasyon Döngüsü
             function animate() {
-                progress += 0.015; // Açılma hızı
+                progress += 0.012; // Akıcı ve yumuşak açılış hızı
                 if (progress > 1) progress = 1;
 
-                drawBouquet(progress);
+                drawDetailedBouquet(progress);
 
                 if (progress < 1) {
                     requestAnimationFrame(animate);
