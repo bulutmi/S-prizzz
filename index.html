@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sürprizi Gör</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .surprise-btn {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            padding: 16px 36px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(255, 65, 108, 0.4);
+            transition: all 0.3s ease;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .surprise-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 65, 108, 0.6);
+        }
+
+        .surprise-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Çiçek Alanı */
+        .bouquet-container {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .bouquet-container.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+
+        /* İmza Alanı */
+        .signature {
+            margin-top: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #ff9a9e;
+            text-shadow: 0 2px 10px rgba(255, 154, 158, 0.4);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease 0.5s;
+        }
+
+        .signature.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Arka Plan Parçacıkları */
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatUp 8s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Arka plan hareketli ışıklar -->
+    <div id="particles"></div>
+
+    <div class="container">
+        <h1 id="titleText">Özel Bir Sürpriz İçin Hazır Mısın?</h1>
+        <button class="surprise-btn" id="surpriseBtn" onclick="revealSurprise()">Sürprizi Gör</button>
+        
+        <div class="bouquet-container" id="bouquetBox">
+            <canvas id="flowerCanvas" width="400" height="450"></canvas>
+        </div>
+        
+        <div class="signature" id="signatureText">Sana Gönderen: Bay Hiçkimse</div>
+    </div>
+
+    <script>
+        // Arka plan için rastgele parlayan parçacıklar üretme
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const p = document.createElement('div');
+            p.classList.add('particle');
+            const size = Math.random() * 4 + 2;
+            p.style.width = `${size}px`;
+            p.style.height = `${size}px`;
+            p.style.left = `${Math.random() * 100}vw`;
+            p.style.animationDuration = `${Math.random() * 6 + 4}s`;
+            p.style.animationDelay = `${Math.random() * 5}s`;
+            particlesContainer.appendChild(p);
+        }
+
+        function revealSurprise() {
+            const btn = document.getElementById('surpriseBtn');
+            const title = document.getElementById('titleText');
+            const bouquetBox = document.getElementById('bouquetBox');
+            const signatureText = document.getElementById('signatureText');
+
+            // Butonu ve başlığı yumuşakça gizle
+            btn.style.opacity = '0';
+            btn.style.transform = 'scale(0.8)';
+            title.style.opacity = '0';
+
+            setTimeout(() => {
+                btn.style.display = 'none';
+                title.style.display = 'none';
+                
+                // Buket alanını ve imzayı göster
+                bouquetBox.classList.add('show');
+                signatureText.classList.add('show');
+                
+                // Çiçek çizim animasyonunu başlat
+                startDrawingFlowers();
+            }, 400);
+        }
+
+        // Canvas Üzerinde Gelişmiş Gerçekçi Çiçek Demeti Çizimi
+        function startDrawingFlowers() {
+            const canvas = document.getElementById('flowerCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            let progress = 0;
+
+            function drawBouquet(p) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // --- 1. Saplar (Gövde) ---
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+
+                // Ana Demet Bağlama Noktası (Vazo/Buket Kökü): (200, 380)
+                const rootX = 200;
+                const rootY = 380;
+
+                // Sap 1 (Sol)
+                ctx.strokeStyle = '#2d5a27';
+                ctx.beginPath();
+                ctx.moveTo(rootX, rootY);
+                ctx.quadraticCurveTo(160, 300, 110, 200 * p);
+                ctx.stroke();
+
+                // Sap 2 (Orta Sol)
+                ctx.beginPath();
+                ctx.moveTo(rootX, rootY);
+                ctx.quadraticCurveTo(180, 290, 150, 170 * p);
+                ctx.stroke();
+
+                // Sap 3 (Merkez)
+                ctx.beginPath();
+                ctx.moveTo(rootX, rootY);
+                ctx.lineTo(200, 140 * p);
+                ctx.stroke();
+
+                // Sap 4 (Orta Sağ)
+                ctx.beginPath();
+                ctx.moveTo(rootX, rootY);
+                ctx.quadraticCurveTo(220, 290, 250, 170 * p);
+                ctx.stroke();
+
+                // Sap 5 (Sağ)
+                ctx.beginPath();
+                ctx.moveTo(rootX, rootY);
+                ctx.quadraticCurveTo(240, 300, 290, 200 * p);
+                ctx.stroke();
+
+
+                // --- 2. Yapraklar ---
+                if (p > 0.4) {
+                    let leafProgress = (p - 0.4) / 0.6;
+                    ctx.fillStyle = '#3a7d34';
+                    
+                    // Sol Yaprak
+                    ctx.save();
+                    ctx.translate(150, 280);
+                    ctx.rotate(-Math.PI / 4);
+                    ctx.scale(leafProgress, leafProgress);
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, 30, 12, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+
+                    // Sağ Yaprak
+                    ctx.save();
+                    ctx.translate(250, 280);
+                    ctx.rotate(Math.PI / 4);
+                    ctx.scale(leafProgress, leafProgress);
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, 30, 12, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+
+                // --- 3. Çiçek Başlıkları (Güller ve Papatyalar) ---
+                if (p > 0.6) {
+                    let flowerProgress = (p - 0.6) / 0.4;
+
+                    // Çiçek Çizim Yardımcı Fonksiyonu
+                    function drawRose(x, y, scale, colorCore, colorOuter) {
+                        ctx.save();
+                        ctx.translate(x, y);
+                        ctx.scale(scale * flowerProgress, scale * flowerProgress);
+
+                        // Dış Taç Yapraklar
+                        ctx.fillStyle = colorOuter;
+                        for (let i = 0; i < 8; i++) {
+                            ctx.rotate((Math.PI * 2) / 8);
+                            ctx.beginPath();
+                            ctx.ellipse(0, 14, 12, 22, 0, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+
+                        // İç Taç Yapraklar
+                        ctx.fillStyle = colorCore;
+                        for (let i = 0; i < 6; i++) {
+                            ctx.rotate((Math.PI * 2) / 6);
+                            ctx.beginPath();
+                            ctx.ellipse(0, 7, 8, 15, 0, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+
+                        // Merkez Göbek
+                        ctx.fillStyle = '#b3003b';
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 6, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        ctx.restore();
+                    }
+
+                    // Sol Çiçek (Pembe Gül)
+                    drawRose(110, 200, 1, '#ff6b8b', '#ff477e');
+
+                    // Sağ Çiçek (Kırmızı Gül)
+                    drawRose(290, 200, 1, '#ff334b', '#cc0020');
+
+                    // Orta Sol Çiçek (Mor/Magenta Gül)
+                    drawRose(150, 170, 0.9, '#da70d6', '#ba55d3');
+
+                    // Orta Sağ Çiçek (Somon Gül)
+                    drawRose(250, 170, 0.9, '#ffa07a', '#ff7f50');
+
+                    // Ana Merkez Büyük Gül (Kırmızı-Bordo)
+                    drawRose(200, 140, 1.2, '#e60026', '#b3001e');
+                }
+            }
+
+            // Animasyon Döngüsü
+            function animate() {
+                progress += 0.015; // Açılma hızı
+                if (progress > 1) progress = 1;
+
+                drawBouquet(progress);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            animate();
+        }
+    </script>
+</body>
+</html>
